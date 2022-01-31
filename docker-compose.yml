@@ -1,0 +1,5 @@
+services:
+  wink_app:
+    image: wink_img
+    build: .
+    container_name: wink_cnt
