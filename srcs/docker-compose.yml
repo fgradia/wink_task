@@ -21,10 +21,10 @@ services:
     stdin_open: true
     tty: true
 
-  php_srv:
-    image: php_img
-    build: php/.
-    container_name: php_cnt
+  php8_srv:
+    image: mphp_img
+    build: php8/.
+    container_name: mphp_cnt
     ports:
       - "80:80"
     volumes:

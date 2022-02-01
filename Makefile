@@ -16,4 +16,4 @@ dopsm :
 	docker compose $(YML) exec mongo_srv bash
 
 dopsp :
-	docker compose $(YML) exec php_srv bash
+	docker compose $(YML) exec php8_srv bash
