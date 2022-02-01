@@ -1,0 +1,55 @@
+# services:
+#   wink_app:
+#     image: wink_img
+#     build: mongoDB/.
+#     container_name: wink_cnt
+#     volumes:
+#       - app_vol:/APP
+  
+services:
+  mongo_srv:
+    image: mongo_img
+    build: mongoDB/.
+    container_name: mongo_cnt
+    expose:
+      - "27017"
+    volumes:
+      - app_vol:/APP
+    networks:
+      app_ntw:
+        ipv4_address: 172.16.6.2
+    stdin_open: true
+    tty: true
+
+  php_srv:
+    image: php_img
+    build: php/.
+    container_name: php_cnt
+    ports:
+      - "80:80"
+    volumes:
+      - app_vol:/APP
+    networks:
+      app_ntw:
+        ipv4_address: 172.16.6.3
+    stdin_open: true
+    tty: true
+
+  
+volumes:
+  app_vol:
+    name: app_vol
+    driver: local
+    driver_opts:
+      type: volume
+      o: bind
+      device: /Users/fgradia/Desktop/wink_app
+
+networks:
+  app_ntw:
+    name: app_ntw
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.6.0/29"
+  
