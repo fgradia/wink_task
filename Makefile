@@ -10,10 +10,13 @@ up :
 	docker compose $(YML) up --build -d
 
 down :
-	docker compose $(YML) down 
+	docker compose $(YML) down -v
 
 dopsm :
 	docker compose $(YML) exec mongo_srv bash
 
 dopsp :
 	docker compose $(YML) exec php8_srv bash
+
+clean : down
+	docker rmi mphp_img mongo_img

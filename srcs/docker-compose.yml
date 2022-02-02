@@ -26,7 +26,7 @@ services:
     build: php8/.
     container_name: mphp_cnt
     ports:
-      - "80:80"
+      - "9000:9000"
     volumes:
       - app_vol:/APP
     networks:
