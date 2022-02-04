@@ -1,5 +1,5 @@
 <?php
-require 'vendor/autoload.php';
+// require 'vendor/autoload.php';
 echo "ciao\n";
 $cl = new MongoDB\Client("mongodb://mongo_srv:27017");
 // $db = $cl->DBTEST;

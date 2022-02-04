@@ -13,4 +13,5 @@ RUN apt-get update \
 	| tee /etc/apt/sources.list.d/mongodb-org-5.0.list \
 && apt-get update \
 && apt-get install -y \
-	mongodb-org
+	mongodb-org 
+CMD mongod --bind_ip 172.16.6.2,127.0.0.1

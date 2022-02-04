@@ -1,11 +1,3 @@
-# services:
-#   wink_app:
-#     image: wink_img
-#     build: mongoDB/.
-#     container_name: wink_cnt
-#     volumes:
-#       - app_vol:/APP
-  
 services:
   mongo_srv:
     image: mongo_img
@@ -13,8 +5,8 @@ services:
     container_name: mongo_cnt
     expose:
       - "27017"
-    volumes:
-      - app_vol:/APP
+    # volumes:
+    #   - app_vol:/APP
     networks:
       app_ntw:
         ipv4_address: 172.16.6.2
@@ -28,7 +20,8 @@ services:
     ports:
       - "9000:9000"
     volumes:
-      - app_vol:/APP
+      - api_docs:/API
+      # - app_vol:/APP
     networks:
       app_ntw:
         ipv4_address: 172.16.6.3
@@ -37,13 +30,21 @@ services:
 
   
 volumes:
-  app_vol:
-    name: app_vol
+  # app_vol:
+  #   name: app_vol
+  #   driver: local
+  #   driver_opts:
+  #     type: volume
+  #     o: bind
+  #     device: /Users/fgradia/Desktop/wink_app
+  
+  api_docs:
+    name: api_docs
     driver: local
     driver_opts:
       type: volume
       o: bind
-      device: /Users/fgradia/Desktop/wink_app
+      device: /Users/fgradia/Desktop/wink_app/srcs/php8/api_d
 
 networks:
   app_ntw:

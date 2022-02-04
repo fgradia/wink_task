@@ -14,6 +14,7 @@ RUN apt-get update \
 	libsqlite3-dev \
 	libmongoc-1.0-0 \
 	libssl-dev \
+	git \
 && cd php-8.0.15 \
 && ./buildconf \
 && ./configure \
@@ -25,18 +26,19 @@ RUN apt-get update \
 && cp php.ini-development /usr/local/lib/php.ini \
 && echo "extension=mongodb.so" \
 	>> /usr/local/lib/php.ini \
-&& cd .. \
+&& cd / \
 && wget https://pecl.php.net/get/mongodb-1.12.0.tgz \
 && tar -xzf mongodb-1.12.0.tgz \
 && cd mongodb-1.12.0 \
 && phpize \
 && ./configure \
 && make all \
-&& make install \
-&& wget https://getcomposer.org/download/2.2.5/composer.phar \
-&& mv composer.phar /usr/local/bin/composer \
-&& chmod +x /usr/local/bin/composer \
-&& composer require mongodb/mongodb
+&& make install 
+CMD php -S 172.16.6.3:9000 -t /API
+# && wget https://getcomposer.org/download/2.2.5/composer.phar \
+# && mv composer.phar /usr/local/bin/composer \
+# && chmod +x /usr/local/bin/composer \
+# # && composer require mongodb/mongodb
 
 
 
