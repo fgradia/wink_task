@@ -44,7 +44,7 @@ volumes:
     driver_opts:
       type: volume
       o: bind
-      device: /Users/fgradia/Desktop/wink_app/srcs/php8/api_d
+      device: $PWD/srcs/php8/api_d
 
 networks:
   app_ntw:

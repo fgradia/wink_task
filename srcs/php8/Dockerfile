@@ -2,9 +2,6 @@ FROM debian:buster
 RUN apt-get update \
 && apt-get install -y \
 	wget \
-&& wget https://www.php.net/distributions/php-8.0.15.tar.gz \
-&& tar -xzf php-8.0.15.tar.gz \
-&& apt-get install -y \
 	pkg-config \
 	build-essential \
 	autoconf \
@@ -15,6 +12,8 @@ RUN apt-get update \
 	libmongoc-1.0-0 \
 	libssl-dev \
 	git \
+&& wget https://www.php.net/distributions/php-8.0.15.tar.gz \
+&& tar -xzf php-8.0.15.tar.gz \
 && cd php-8.0.15 \
 && ./buildconf \
 && ./configure \
@@ -33,12 +32,15 @@ RUN apt-get update \
 && phpize \
 && ./configure \
 && make all \
-&& make install 
+&& make install \
+&& wget https://getcomposer.org/download/2.2.5/composer.phar \
+&& mv composer.phar /usr/local/bin/composer \
+&& chmod +x /usr/local/bin/composer \
+&& composer require mongodb/mongodb \
+&& apt-get clean \
+&& apt-get autoremove -y 
+# && rm -rf /var/lib/{apt, dpkg, cache, log}/ \
 CMD php -S 172.16.6.3:9000 -t /API
-# && wget https://getcomposer.org/download/2.2.5/composer.phar \
-# && mv composer.phar /usr/local/bin/composer \
-# && chmod +x /usr/local/bin/composer \
-# # && composer require mongodb/mongodb
 
 
 
