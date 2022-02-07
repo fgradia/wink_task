@@ -1,42 +1,44 @@
 services:
   mongo_srv:
     image: mongo_img
-    build: mongoDB/.
+    build: mongo/.
     container_name: mongo_cnt
     expose:
       - "27017"
-    # volumes:
-    #   - app_vol:/APP
+    volumes:
+      - db_vol:/data
     networks:
       app_ntw:
         ipv4_address: 172.16.6.2
-    stdin_open: true
-    tty: true
+    # restart: always
+    # stdin_open: true
+    # tty: true
 
-  php8_srv:
-    image: mphp_img
-    build: php8/.
-    container_name: mphp_cnt
+  php_srv:
+    image: php_img
+    build: php/.
+    container_name: php_cnt
     ports:
       - "9000:9000"
     volumes:
       - api_docs:/API
-      # - app_vol:/APP
     networks:
       app_ntw:
         ipv4_address: 172.16.6.3
-    stdin_open: true
-    tty: true
+    # depends_on:
+    #   - mongo_srv
+    # restart: always
+    # stdin_open: true
+    # tty: true
 
-  
 volumes:
-  # app_vol:
-  #   name: app_vol
-  #   driver: local
-  #   driver_opts:
-  #     type: volume
-  #     o: bind
-  #     device: /Users/fgradia/Desktop/wink_app
+  db_vol:
+    name: db_vol
+    driver: local
+    driver_opts:
+      type: volume
+      o: bind
+      device: $PWD/srcs/mongo/data
   
   api_docs:
     name: api_docs
@@ -44,7 +46,7 @@ volumes:
     driver_opts:
       type: volume
       o: bind
-      device: $PWD/srcs/php8/api_d
+      device: $PWD/srcs/php/api_d
 
 networks:
   app_ntw:

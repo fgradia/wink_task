@@ -1,13 +1,13 @@
 <?php
 
-require 'vendor/autoload.php';
+require '/vendor/autoload.php';
 
 class winkClient {
 
 	private $mongo_socket = "mongodb://172.16.6.2:27017";
 	private $mongo;
     private $db;
-    public $coll;
+    private $coll;
 
 	function __construct() {
 			$this->mongo = new  MongoDB\Client($this->mongo_socket);
@@ -53,7 +53,7 @@ class winkClient {
             'title' => $_REQUEST['title']
         ]);
         if (count($ret->toArray())) {
-            echo "Another post is using this title!";
+            echo "Another post has this title!";
             return ;
         }
         $ret = $this->coll->insertOne([
@@ -63,14 +63,23 @@ class winkClient {
             'status' => 'draft',
             'author' => 'Brian Fox',
         ]);
-        print_r($ret);
+        var_dump($ret);
+        printf("Inserted %d document\n", $ret->getInsertedCount());
+        // echo "[_id]",$ret['_id'],
+        //     "[title]", $ret['title'],
+        //     // "[body]", $ret['body'],
+        //     "[status]", $ret['status'];
     }
     function pub_post() {
         $ret = $this->coll->findOneAndUpdate([
             'title' => $_REQUEST['title']], [
                 '$set' => ['status' => 'published']
         ]);
-        print_r($ret);
+        if ($ret)
+            echo "Post Updated: ", $_REQUEST['title'];
+        else
+            echo "Nothing to Update!";
+        // print_r($ret);
     }
     function del_post() {
         $ret = $this->coll->findOneAndDelete([
