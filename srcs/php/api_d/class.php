@@ -14,21 +14,24 @@ class winkClient {
             $this->db = $this->mongo->winkDB;
             $this->coll = $this->db->Blog;
 	}
+    function print_doc($doc) {
+        echo "[_id]",$doc['_id'],
+            ",[title]", $doc['title'],
+            ",[body]", $doc['body'],
+            ",[status]", $doc['status'],
+            ",[author]", $doc['author'],
+            ",[hashtags]";
+        foreach ($doc['hashtags'] as $tag)
+            echo '#', $tag;
+        echo nl2br("\n\n");
+    }
 	function show_posts($x = 0) {
         $status = $x ? 'draft' : 'published';
         $index = $this->coll->find([
             'status' => $status
         ]);
         foreach ($index as $doc) {
-            echo "[_id]",$doc['_id'],
-            "[title]", $doc['title'],
-            "[body]", $doc['body'],
-            "[status]", $doc['status'],
-            "[author]", $doc['author'],
-            "[hashtags]";
-            foreach ($doc['hashtags'] as $tag)
-                echo $tag , ',';
-            echo nl2br("\n\n");
+            $this->print_doc($doc);
         }
     }
     function show_tags() {
@@ -40,8 +43,7 @@ class winkClient {
             'hashtags' => ['$in' => explode(',', $_REQUEST['tag'])]
         ]);
         foreach ($index as $doc) {
-            print_r($doc);
-            echo '<br/><br/>';
+            $this->print_doc($doc);
         }
     }
 	function new_post() {
@@ -53,7 +55,7 @@ class winkClient {
             'title' => $_REQUEST['title']
         ]);
         if (count($ret->toArray())) {
-            echo "Another post has this title!";
+            echo "Another post has this title!", "\n";
             return ;
         }
         $ret = $this->coll->insertOne([
@@ -63,12 +65,8 @@ class winkClient {
             'status' => 'draft',
             'author' => 'Brian Fox',
         ]);
-        var_dump($ret);
+        print_r($ret);
         printf("Inserted %d document\n", $ret->getInsertedCount());
-        // echo "[_id]",$ret['_id'],
-        //     "[title]", $ret['title'],
-        //     // "[body]", $ret['body'],
-        //     "[status]", $ret['status'];
     }
     function pub_post() {
         $ret = $this->coll->findOneAndUpdate([
@@ -76,16 +74,19 @@ class winkClient {
                 '$set' => ['status' => 'published']
         ]);
         if ($ret)
-            echo "Post Updated: ", $_REQUEST['title'];
+            echo "Post Updated: ", $_REQUEST['title'], "\n";
         else
-            echo "Nothing to Update!";
-        // print_r($ret);
+            echo "Nothing to Update!", "\n";
     }
     function del_post() {
         $ret = $this->coll->findOneAndDelete([
             'title' => $_REQUEST['title']
         ]);
         print_r($ret);
+        if ($ret)
+            echo "Post Deleted: ", $_REQUEST['title'], "\n";
+        else
+            echo "Nothing to Delete!", "\n";
     }
 }
 

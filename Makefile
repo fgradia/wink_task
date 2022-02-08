@@ -1,4 +1,7 @@
 YML = -f srcs/docker-compose.yml
+NULL = 
+CNT_RM := $(shell sudo docker ps -aq)
+IMG_RM := $(shell sudo docker images -q)
 
 all : help
 
@@ -7,8 +10,13 @@ help :
 	make down - stop & clean app\n\
 	make dopsm - open bash in mongo_srv\n\
 	make dopsp - open bash in php_srv\n\
-	make clean - down + clean imgs\n\
-	make fclean - clean + rm database"
+	make cclean - down + clean ALL docker containers\n\
+	make iclean - cclean + clean ALL docker images\n\
+	make fclean - iclean + rm mongo_database + clean ALL docker data\n\
+	make docker - run file docker_install.sh to install docker on linux\n"
+
+docker:
+	bash docker_install.sh 2> /dev/null
 
 up : down
 	docker compose $(YML) up --build -d
@@ -22,12 +30,19 @@ dopsm :
 dopsp :
 	docker compose $(YML) exec php_srv bash
 
-clean : down
-	docker rmi php_img mongo_img
+cclean : down
+ifneq ($(CNT_RM), $(NULL))
+	sudo docker rm -f $(CNT_RM);
+endif
 
-fclean : clean
-	rm -rf srcs/mongo/data/*
-	docker builder prune -f
+iclean : cclean
+ifneq ($(IMG_RM), $(NULL))
+	sudo docker rmi -f $(IMG_RM);
+endif
 
-PHONY : all help up down dopsm dopsp clean fclean
+fclean : iclean
+	rm -rf /mongo_db
+	docker system prune -f
+
+PHONY : all help docker up down dopsm dopsp cclean iclean fclean
 

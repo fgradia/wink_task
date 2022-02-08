@@ -16,4 +16,4 @@ RUN apt-get update \
 	mongodb-org \
 && apt-get clean \
 && apt-get autoremove -y 
-CMD mongod --bind_ip 172.16.6.2,127.0.0.1
+CMD mongod  --bind_ip 172.16.6.2,127.0.0.1 

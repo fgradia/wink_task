@@ -6,13 +6,11 @@ services:
     expose:
       - "27017"
     volumes:
-      - db_vol:/data
+      - /mongo_db:/data/db:rw
     networks:
       app_ntw:
         ipv4_address: 172.16.6.2
-    # restart: always
-    # stdin_open: true
-    # tty: true
+    restart: always
 
   php_srv:
     image: php_img
@@ -21,32 +19,13 @@ services:
     ports:
       - "9000:9000"
     volumes:
-      - api_docs:/API
+      - $PWD/srcs/php/api_d:/API:ro
     networks:
       app_ntw:
         ipv4_address: 172.16.6.3
-    # depends_on:
-    #   - mongo_srv
-    # restart: always
-    # stdin_open: true
-    # tty: true
-
-volumes:
-  db_vol:
-    name: db_vol
-    driver: local
-    driver_opts:
-      type: volume
-      o: bind
-      device: $PWD/srcs/mongo/data
-  
-  api_docs:
-    name: api_docs
-    driver: local
-    driver_opts:
-      type: volume
-      o: bind
-      device: $PWD/srcs/php/api_d
+    depends_on:
+      - mongo_srv
+    restart: always
 
 networks:
   app_ntw:
